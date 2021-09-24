@@ -13,6 +13,5 @@ namespace ${projectName}.DataBase
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
         }
-
     }
 }

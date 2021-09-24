@@ -7,18 +7,23 @@ class AbstractHandler:
     def createFromModel(projectName):
         path_to_files = str(f"./{projectName}/Models")
         files = fh.getFilesFromDir(path_to_files)
-        for f in files:
+        tables = []
 
+        for f in files:
             if "AbstractEntity.cs" in str(f) or "Scope.cs" in str(f):
                 continue
-
+            
             f = f[:-3]
+
             customDict = {"projectName" : str(projectName), "modelName" : str(f)}
             
             AbstractHandler.generateRepository(customDict)
             AbstractHandler.generateService(customDict)
             AbstractHandler.generateController(customDict)
-            AbstractHandler.generateDTO(customDict)
+
+            tables.append(f)
+
+        AbstractHandler.npg_file(projectName, tables)
 
     def generateRepository(modelDict):
         path_to_template = str("./TemplateFiles/Repository/repositoryTemplate.txt")
@@ -56,13 +61,14 @@ class AbstractHandler:
         path_to_target = str(f"./{modelDict['projectName']}/DTO/{modelDict['modelName']}DTO.cs")
         fh.fileFromTemplate(path_to_template, path_to_target, modelDict)
 
-    #properties : [{
-    #   "type":"string",
-    #   "name":"email",
-    #   "get": "y",
-    #   "set": "y",
-    #   "privacy": "public"
-    #}, {...}]
+    def generateNpgContext(modelDict):
+        # path_to_template = str("./TemplateFiles/DTO/dtoTemplate.txt")
+        # path_to_target = str(f"./{modelDict['projectName']}/DTO/{modelDict['modelName']}DTO.cs")
+        # fh.fileFromTemplate(path_to_template, path_to_target, modelDict)
+        pass
+
+    def addNpgContext():
+        pass
 
     def modelCreate(project_name, model_name, properties):
         for p in properties:
@@ -70,5 +76,15 @@ class AbstractHandler:
             print(model_name)
 
     def npg_file(project_name, tables):
-        #for t in tables:
-        pass
+        modelDict = []
+        dbsets = ""
+        
+        path_to_template = str("./TemplateFiles/DataBase/NpgContext-dbset.txt")
+        path_to_target = str(f"./{project_name}/DataBase/NpgContext.cs")
+        
+        for t in tables:
+            dbsets = dbsets + "public DbSet<" + t + "> " + t + "s {get;set;} \n"
+
+        modelDict = {"projectName": project_name, "dbsets" : dbsets, "relationships": ""}
+        
+        fh.fileFromTemplate(path_to_template, path_to_target, modelDict)

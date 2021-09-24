@@ -10,9 +10,12 @@ namespace ${projectName}.DataBase
         {
         }
 
+${dbsets}
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-        }
 
+            ${relationships}
+        }
     }
 }
