@@ -1,0 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using $projectName.DataBase;
+using $projectName.Models;
+using $projectName.Service.AbstractClass;
+
+namespace $projectName.Service {
+    public class ${modelName}Service : AbstractServiceNpgsql<${modelName}> {
+        public ${modelName}Service(NpgContext context) : base(context) {
+            _repository = new Repository.${modelName}Repository(context);
+        }
+    }
+}

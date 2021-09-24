@@ -1,0 +1,24 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using $projectName.Models;
+using $projectName.DataBase;
+
+namespace $projectName.Repository {
+    public class ${modelName}Repository : AbstractClass.RepositoryNpgsql<${modelName}> {
+        Microsoft.Extensions.Configuration.IConfiguration _configuration;
+
+        public ${modelName}Repository(NpgContext context) : base(context)
+        {
+        }
+
+        public ${modelName}Repository(NpgContext context, Microsoft.Extensions.Configuration.IConfiguration configuration) : base(context) {
+            _configuration = configuration;
+        }
+
+    }
+}

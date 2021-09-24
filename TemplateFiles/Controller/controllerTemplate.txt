@@ -1,0 +1,22 @@
+using System;
+using Microsoft.AspNetCore.Mvc;
+using $projectName.DataBase;
+using $projectName.DTO;
+using $projectName.Models;
+using $projectName.Controllers.AbstractClass;
+
+namespace $projectName.Controllers
+{
+
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ${modelName}Controller : AbstractController<${modelName}, ${modelName}DTO>
+    {
+        public ${modelName}Controller(NpgContext context) : base(context) { }
+
+        public override IActionResult GetFromQuery([FromQuery] string term)
+        {
+            throw new NotImplementedException(); 
+        }
+    }
+}
