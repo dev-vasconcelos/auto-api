@@ -8,6 +8,7 @@ from abstractHandler import AbstractHandler as ah
 import argparse
 import getopt
 import snoop
+from sqlHandler import SqlHandler as sh
 
 class StartupGenerator:
     def __init__ (self):
@@ -21,7 +22,7 @@ class StartupGenerator:
 def handleArguments(argv):
     result = {}
     try:
-        opts, args = getopt.getopt(argv, "hp:t:cm", ["project=","type=","config=","model="])
+        opts, args = getopt.getopt(argv, "hp:t:cms:", ["project=","type=","config=","model=", "sql="])
     except getopt.GetoptError:
         print("note: handler error in the future")
         sys.exit(2)
@@ -37,6 +38,8 @@ def handleArguments(argv):
             result['config'] = 1
         elif opt in ("-m", "--model"):
             result["model"] = 1
+        elif opt in ("-s", "--sql"):
+            result["sql"] = str(arg)
     if(result['projectName'] is None):
         print("Project name missing")
     else:
@@ -51,27 +54,29 @@ def main():
     # d = {
     #     'projectName': 'nomeInSaNoTaLigado'
     # }
+    
     if "model" in d:
         ah.createFromModel(d['projectName'])
     else:
-        dnethandler.createWebApiProject(d['projectName'])
-        dnethandler.addPackage(d['projectName'], "Microsoft.EntityFrameworkCore.InMemory")
-        dnethandler.addPackage(d['projectName'], "Newtonsoft.Json --version 13.0.1")
-        dnethandler.addPackage(d['projectName'], "Microsoft.AspNetCore.Mvc.NewtonsfotJson --version 3.0.0")
-        dnethandler.addPackage(d['projectName'], "Npgsql --version 5.0.7")
-        dnethandler.addPackage(d['projectName'], "Serilog --version 2.10.0")
-        dnethandler.addPackage(d['projectName'], "Npgsql.EntityFrameworkCore.PostgreSQL --version 5.0.7")
-        dnethandler.addPackage(d['projectName'], "Serilog.AspNetCore")
-        dnethandler.addPackage(d['projectName'], "Serilog.Settings.Configuration")
-        dnethandler.addPackage(d['projectName'], "System.IdentityModel.Tokens.Jwt")
-        dnethandler.addPackage(d['projectName'], "Microsoft.AspNetCore.Authentication.JwtBearer")
-        dnethandler.addPackage(d['projectName'], "Microsoft.AspNetCore.Authentication.OpenIdConnect")
-        dnethandler.addPackage(d['projectName'], "Microsoft.AspNetCore.Mvc.NewtonsoftJson")
+        # dnethandler.createWebApiProject(d['projectName'])
+        # dnethandler.addPackage(d['projectName'], "Microsoft.EntityFrameworkCore.InMemory")
+        # dnethandler.addPackage(d['projectName'], "Newtonsoft.Json --version 13.0.1")
+        # dnethandler.addPackage(d['projectName'], "Microsoft.AspNetCore.Mvc.NewtonsfotJson --version 3.0.0")
+        # dnethandler.addPackage(d['projectName'], "Npgsql --version 5.0.7")
+        # dnethandler.addPackage(d['projectName'], "Serilog --version 2.10.0")
+        # dnethandler.addPackage(d['projectName'], "Npgsql.EntityFrameworkCore.PostgreSQL --version 5.0.7")
+        # dnethandler.addPackage(d['projectName'], "Serilog.AspNetCore")
+        # dnethandler.addPackage(d['projectName'], "Serilog.Settings.Configuration")
+        # dnethandler.addPackage(d['projectName'], "System.IdentityModel.Tokens.Jwt")
+        # dnethandler.addPackage(d['projectName'], "Microsoft.AspNetCore.Authentication.JwtBearer")
+        # dnethandler.addPackage(d['projectName'], "Microsoft.AspNetCore.Authentication.OpenIdConnect")
+        # dnethandler.addPackage(d['projectName'], "Microsoft.AspNetCore.Mvc.NewtonsoftJson")
         print(dnethandler.restore(d['projectName']))
         fh.createWebBaseFolderStructre(d['projectName'])
 
     if "config" in d:
         StartupGenerator.prepareConfigFiles(d)
-
+    if "sql" in d:
+            sh.createModel(d['projectName'], d['sql'])
 if __name__ == "__main__":
     main()

@@ -1,0 +1,7 @@
+namespace $projectName.Models{
+
+    public class $entity : AbstractEntity {
+
+    }
+
+}
