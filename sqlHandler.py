@@ -41,18 +41,20 @@ class SqlHandler():
                     variable = SqlHandler.check_data_converter(line)
                     if variable:
                         mdl.attributes.append(variable)
-                        # for atr in mdl.attributes:
-                        #     print(atr.atr_string())
-                        # print(variable.atr_string())
-                # elif in_table and not SqlHandler.is_psql(line):
                 elif in_table:
                     atr_string = ""
+                    
                     for atr in mdl.attributes:
                         atr_string = atr_string + atr.atr_string() + " \n"
                         customDict["attributes"] = atr_string
+
                     fh.fileFromTemplate(path_to_template, path_to_target, customDict)
+                    
+                    customDict = {'projectName' : project_name, 'variables': "", "name":"", "attributes":""}
+                    
                     in_table = False
                     mdl = Model()
+                    mdl.attributes = []
                     
                     
     def get_table_name(line):

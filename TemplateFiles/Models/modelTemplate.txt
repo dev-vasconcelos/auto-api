@@ -2,7 +2,7 @@ namespace $projectName.Models{
 
     public class $name : AbstractEntity {
 
-        $attributes
+$attributes
 
     }
 
