@@ -20,6 +20,7 @@ class AbstractHandler:
             AbstractHandler.generateRepository(customDict)
             AbstractHandler.generateService(customDict)
             AbstractHandler.generateController(customDict)
+            AbstractHandler.generateDTO(customDict)
 
             tables.append(f)
 
@@ -42,6 +43,9 @@ class AbstractHandler:
 
     def generateDTO(modelDict):
         variables = ""
+        print(modelDict['projectName'])
+        print(modelDict['modelName'])
+
         with open(f"./{modelDict['projectName']}/Models/{modelDict['modelName']}.cs", 'r') as f:
             Lines = f.readlines()
             for l in Lines:

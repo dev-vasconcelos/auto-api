@@ -11,14 +11,13 @@ class SqlHandler():
     def __init__(self):
         print("created")
 
-    # @snoop
     def createModel(project_name, file_path):
         print(file_path)
         with open(file_path, 'r') as sql_file:
             lines = sql_file.readlines()
             path_to_template = './TemplateFiles/Models/modelTemplate.txt'
             path_to_target = ''
-            customDict = {'projectName' : project_name, 'variables': "", "name":"", "attributes":""}
+            customDict = {'projectName' : project_name, 'variables': "", "modelName":"", "attributes":""}
             in_table = False
             mdl = Model()
 
@@ -34,7 +33,7 @@ class SqlHandler():
                     mdl.name = table_name
 
                     # customDict['model'] = mdl
-                    customDict['name'] = mdl.name
+                    customDict['modelName'] = mdl.name
                     # fh.fileFromTemplate(path_to_template, path_to_target, customDict)
 
                 elif in_table and SqlHandler.is_psql(line):
@@ -50,7 +49,7 @@ class SqlHandler():
 
                     fh.fileFromTemplate(path_to_template, path_to_target, customDict)
                     
-                    customDict = {'projectName' : project_name, 'variables': "", "name":"", "attributes":""}
+                    customDict = {'projectName' : project_name, 'variables': "", "modelName":"", "attributes":""}
                     
                     in_table = False
                     mdl = Model()
@@ -69,6 +68,7 @@ class SqlHandler():
         return table_name
 
     def snake_to_cammel(string):
+        final_string = string
         while string.find("_") >= 0 :
             inx = string.find("_")
             string = string[:inx] + string[inx+1:]
@@ -76,33 +76,81 @@ class SqlHandler():
             string_list[inx] = string[inx].upper()
             string_list[0] = string[0].upper()
             final_string = "".join(string_list)
+
         return final_string
 
     def check_data_converter(line):
-        
         atr = Attribute()
-        
-        if "text" in line:
-            atr.type = "string"
-        else:
-            return False
-        
-        split_line = line.split(" ")
-        
-        atr.privacy = "public"
 
-        name_filter = list(filter(lambda x: (x != ''), split_line))
+
+        ## NAME ##
+        
+        splited_line = line.split(" ")
+        abstract_names = ['Id', 'UpdatedOn', 'CreatedBy', 'UpdatedBy', 'CreatedOn', 'Scope', 'ScopeId']
+        
+        name_filter = list(filter(lambda x: (x != ''), splited_line))
         atr.name = re.sub('[^A-Za-z0-9]+', '', name_filter[0])
         
+        string_list = list(atr.name)
+        string_list[0] = atr.name[0].upper()
+        atr.name = "".join(string_list)
+
+        for abname in abstract_names:
+            if abname.upper() == atr.name.upper():
+                return False
+
+        if "id".upper() == atr.name:
+            return False
+
+        atr.name = SqlHandler.snake_to_cammel(atr.name)
+
+        ## TYPE ##
+        string_types = ['text', 'varchar(45)', 'varchar']
+        int_types = ['int4']
+        long_types = ['int8']
+        float_types =['float4', 'float8']
+        datetime_types = ['datetime', 'timestamp']
+        splited_line = line.split(" ")
+        
+        splited_line = list(map(lambda x : x.upper(), splited_line))
+
+        is_string = set(list(map(lambda x: x.upper(), string_types))) & set(splited_line)
+        is_int = set(list(map(lambda x: x.upper(), int_types))) & set(splited_line)
+        is_long = set(list(map(lambda x: x.upper(), long_types))) & set(splited_line)
+        is_float = set(list(map(lambda x: x.upper(), float_types))) & set(splited_line)
+        is_datetime = set(list(map(lambda x: x.upper(), datetime_types))) & set(splited_line)
+
+        if is_string:
+            atr.type = "string"
+        elif is_int:
+            atr.type = "int"
+        elif is_long:
+            atr.type = "long"
+        elif is_float:
+            atr.type = "float"
+        elif is_datetime:
+            atr.type = "DateTime"
+        else:
+            atr.type = "bool"
+                
+        atr.privacy = "public"
+
         atr.is_getter = True
         atr.is_setter = True
-
+        print(atr.atr_string())
         return atr
 
     def is_psql(line):
-        data_types = ['text','int8','timestamp','int4','float4']
+        data_types = ['text','int8','timestamp','int4','float4','VARCHAR']
         for data in data_types:
-            if data in line:
+            if data.upper() in line.upper():
+                return True
+        return False
+
+    def is_mysql(line):
+        data_types = ['VARCHAR(45)','INT']
+        for data in data_types:
+            if data.upper() in line.upper():
                 return True
         return False
 

@@ -1,6 +1,6 @@
 class Attribute:
 
-    def __init__(self, name=None, is_getter=True, is_setter=True, type=None, privacy=None):
+    def __init__(self, name=None, is_getter=True, is_setter=True, type="", privacy=""):
         self.name = name
         self.type = type
         self.is_getter = is_getter
