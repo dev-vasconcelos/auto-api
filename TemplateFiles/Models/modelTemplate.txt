@@ -1,6 +1,8 @@
 namespace $projectName.Models{
 
-    public class $entity : AbstractEntity {
+    public class $name : AbstractEntity {
+
+        $attributes
 
     }
 

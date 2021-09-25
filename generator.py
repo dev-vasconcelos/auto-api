@@ -71,7 +71,7 @@ def main():
         # dnethandler.addPackage(d['projectName'], "Microsoft.AspNetCore.Authentication.JwtBearer")
         # dnethandler.addPackage(d['projectName'], "Microsoft.AspNetCore.Authentication.OpenIdConnect")
         # dnethandler.addPackage(d['projectName'], "Microsoft.AspNetCore.Mvc.NewtonsoftJson")
-        print(dnethandler.restore(d['projectName']))
+        # print(dnethandler.restore(d['projectName']))
         fh.createWebBaseFolderStructre(d['projectName'])
 
     if "config" in d:
