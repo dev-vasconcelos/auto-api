@@ -22,20 +22,25 @@ class SqlHandler():
                     table_name = splited_line[-1][0]
                     table_name = table_name.replace("tb","")
 
-                    i = 0
-                    while table_name.find("_") >= 0 :
-                        i = i + 1
-                        inx = table_name.find("_")
-                        table_name = table_name[:inx] + table_name[inx+1:]
-                        string_list = list(table_name)
-                        string_list[inx] = table_name[inx].upper()
-                        table_name = "".join(string_list)                    
-
+                    table_name = SqlHandler.snake_to_cammel(table_name)
                     table_name = re.sub('[^A-Za-z0-9]+', '', table_name)
+
                     path_to_target = str(f"./{project_name}/Models/{table_name}.cs")
                     customDict['entity'] = table_name
+                    
                     fh.fileFromTemplate(path_to_template, path_to_target, customDict)
                     
+    def snake_to_cammel(string):
+        while string.find("_") >= 0 :
+            inx = string.find("_")
+            string = string[:inx] + string[inx+1:]
+            string_list = list(string)
+            string_list[inx] = string[inx].upper()
+            string_list[0] = string[0].upper()
+            final_string = "".join(string_list)
+
+        return final_string
+
     def createModelFile(project_name , model_name):
         pass
 
