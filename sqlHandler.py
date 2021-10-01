@@ -47,12 +47,15 @@ class SqlHandler():
                     atr_string = ""
                     
                     for atr in mdl.attributes:
-                        atr_string = atr_string + atr.atr_string() + " \n"
-                        customDict["attributes"] = atr_string
+                        atr.notations = []
+                        atr.notations = SqlHandler.get_attribute_notations(atr, line)
+                        atr_string = atr_string + atr.atr_string() + " \n \n"
+                    customDict["attributes"] = atr_string
+                    atr.notations = []
 
                     fh.fileFromTemplate(path_to_template, path_to_target, customDict)
                     
-                    customDict = {'projectName' : project_name, 'variables': "", "modelName":"", "attributes":""}
+                    customDict = {'projectName' : project_name, 'variables': "", "modelName":"", "attributes":"", "tableName": ""}
                     
                     in_table = False
                     mdl = Model()
@@ -102,6 +105,10 @@ class SqlHandler():
             inx = inx + 1
 
         return final_string
+
+    def get_attribute_notations(atr, line):
+        atr.notations.append("[Column(\""+ SqlHandler.cammel_to_snake(atr.name) +"\")]")
+        return atr.notations
 
     def check_data_converter(line):
         atr = Attribute()
@@ -160,6 +167,7 @@ class SqlHandler():
 
         atr.is_getter = True
         atr.is_setter = True
+
         # print(atr.atr_string())
         return atr
 
