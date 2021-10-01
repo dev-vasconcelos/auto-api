@@ -60,6 +60,7 @@ def main():
     else:
         dnethandler.createWebApiProject(d['projectName'])
         dnethandler.addPackage(d['projectName'], "Microsoft.EntityFrameworkCore.InMemory")
+        dnethandler.addPackage(d['projectName'], "Microsoft.EntityFrameworkCore.Design")
         dnethandler.addPackage(d['projectName'], "Newtonsoft.Json --version 13.0.1")
         dnethandler.addPackage(d['projectName'], "Microsoft.AspNetCore.Mvc.NewtonsfotJson --version 3.0.0")
         dnethandler.addPackage(d['projectName'], "Npgsql --version 5.0.7")
@@ -78,6 +79,8 @@ def main():
         StartupGenerator.prepareConfigFiles(d)
     if "sql" in d:
             sh.createModel(d['projectName'], d['sql'])
+            StartupGenerator.prepareConfigFiles(d)
             ah.createFromModel(d['projectName'])
+
 if __name__ == "__main__":
     main()

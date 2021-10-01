@@ -1,3 +1,4 @@
+from typing import final
 from Models.Attribute import Attribute
 from Models.Model import Model
 import os
@@ -12,12 +13,12 @@ class SqlHandler():
         print("created")
 
     def createModel(project_name, file_path):
-        print(file_path)
+        # print(file_path)
         with open(file_path, 'r') as sql_file:
             lines = sql_file.readlines()
             path_to_template = './TemplateFiles/Models/modelTemplate.txt'
             path_to_target = ''
-            customDict = {'projectName' : project_name, 'variables': "", "modelName":"", "attributes":""}
+            customDict = {'projectName' : project_name, 'variables': "", "modelName":"", "attributes":"", "tableName": ""}
             in_table = False
             mdl = Model()
 
@@ -34,6 +35,8 @@ class SqlHandler():
 
                     # customDict['model'] = mdl
                     customDict['modelName'] = mdl.name
+                    customDict['tableName'] = SqlHandler.entity_to_table_name(customDict['modelName'])
+
                     # fh.fileFromTemplate(path_to_template, path_to_target, customDict)
 
                 elif in_table and SqlHandler.is_psql(line):
@@ -79,9 +82,29 @@ class SqlHandler():
 
         return final_string
 
+    def cammel_to_snake(string):
+        inx = 0
+        string_list = list(string)
+        final_string = string
+
+        for s in string_list:
+            
+            if inx == 0:
+                s = s.lower()
+                string_list[inx] = s
+                final_string = "".join(string_list)
+
+            if s.isupper() and inx > 0:
+                s = s.lower()
+                string_list[inx] = s
+                final_string = "".join(string_list[:inx]) + "_" + "".join(string_list[inx:])
+            
+            inx = inx + 1
+
+        return final_string
+
     def check_data_converter(line):
         atr = Attribute()
-
 
         ## NAME ##
         
@@ -137,7 +160,7 @@ class SqlHandler():
 
         atr.is_getter = True
         atr.is_setter = True
-        print(atr.atr_string())
+        # print(atr.atr_string())
         return atr
 
     def is_psql(line):
@@ -153,6 +176,12 @@ class SqlHandler():
             if data.upper() in line.upper():
                 return True
         return False
+
+    def entity_to_table_name(entity_name):
+        table_name = "[Table(\"tb_"
+        table_name = table_name + SqlHandler.cammel_to_snake(entity_name)
+        table_name = table_name + "\")]"
+        return table_name
 
     def create_model_variables():
         pass
