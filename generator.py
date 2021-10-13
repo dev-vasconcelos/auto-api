@@ -18,6 +18,8 @@ class StartupGenerator:
         lowerDict = dh.dictToLower(dictExpressions, "projectName")
         fh.fileFromTemplate('./TemplateFiles/appsettings.Development.txt', str(f"./{dictExpressions['projectName']}/appsettings.Development.json"), lowerDict)
         fh.fileFromTemplate('./TemplateFiles/appsettings.txt', str(f"./{dictExpressions['projectName']}/appsettings.json"), lowerDict)
+        fh.copy_file('./TemplateFiles/selfrun.txt', str(f"./{dictExpressions['projectName']}/selfrun.sh"))
+        fh.copy_file('./TemplateFiles/dockerfile-generator.txt', str(f"./{dictExpressions['projectName']}/dockerfile-generator.sh"))
 
 def handleArguments(argv):
     result = {}

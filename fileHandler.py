@@ -22,6 +22,15 @@ class FileHandler():
                 # print(result)  
                 print(str(result), file=t)
     
+    def copy_file(path_to_template, path_to_target):
+        with open(path_to_template, 'r') as f:
+                
+            # result = src.replace(, '')
+            with open(path_to_target, 'w') as t:
+                for l in f.readlines():  
+                    if l != "\n":
+                        print(l, file=t)
+
     # @snoop
     def createWebBaseFolderStructre(projectName):
         paths = [
