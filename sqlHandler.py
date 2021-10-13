@@ -8,12 +8,17 @@ from Models.Attribute import Attribute
 from Models.Model import Model
 import snoop
 
+##
+# A princípio o sql que aceita relacionamentos deve ser padronizado de acordo com o workbench 
+##
+
 class SqlHandler():
     def __init__(self):
         print("created")
 
     def createModel(project_name, file_path):
         # print(file_path)
+        is_mysql_workbench = True
         with open(file_path, 'r') as sql_file:
             lines = sql_file.readlines()
             path_to_template = './TemplateFiles/Models/modelTemplate.txt'
@@ -43,10 +48,17 @@ class SqlHandler():
                     variable = SqlHandler.check_data_converter(line)
                     if variable:
                         mdl.attributes.append(variable)
-                elif in_table:
+                elif SqlHandler.is_foreign_key(line):
+                    SqlHandler.psql_handle_fk(line, mdl.attributes)
+                    print(line)
+                # MYSQL WORKBENCH
+                # elif in_table and "CONSTRAINT" in line.upper():
+                #     SqlHandler.relationship_from_mysql_workbench_line(line, mdl.attributes)
+                elif in_table and line == "\n":
                     atr_string = ""
                     
                     for atr in mdl.attributes:
+                        print(atr.notations)
                         atr.notations = []
                         atr.notations = SqlHandler.get_attribute_notations(atr, line)
                         atr_string = atr_string + atr.atr_string() + " \n \n"
@@ -108,6 +120,8 @@ class SqlHandler():
 
     def get_attribute_notations(atr, line):
         atr.notations.append("[Column(\""+ SqlHandler.cammel_to_snake(atr.name) +"\")]")
+        if atr.is_fk:
+            atr.notations.append("//[ForeignKey(\""+ SqlHandler.cammel_to_snake(atr.name) +"\")]")
         return atr.notations
 
     def check_data_converter(line):
@@ -196,3 +210,64 @@ class SqlHandler():
 
     def createNpg():
         pass
+
+    #POSTGRES
+    def is_foreign_key(line):
+        key_words = ['CONSTRAINT','FOREIGN KEY', 'REFERENCES']
+        for k in key_words:
+            if k not in line:
+                return False
+        return True
+
+    def psql_handle_fk(line, attributes):
+        replaced = line.replace(")", "(")    
+        splited = replaced.split("(")
+        i = 0
+        for s in splited:
+            print("idx: " + str(i) + "; value: " + s)
+            i = i + 1
+        # fk da tabela
+        splited[1] = re.sub('[^A-Za-z0-9]+', '', splited[1])
+        print("fk no model/tabela: " + splited[1])
+
+        # refenencia a tabela:
+        splited[2] = splited[2].split(".")[1]
+        splited[2] = re.sub('[^A-Za-z0-9]+', '', splited[2])
+        print("referencia: " + splited[2])
+
+        # atributo da tabela que é refenciado
+        splited[3] = re.sub('[^A-Za-z0-9]+', '', splited[3])
+        print("atributo: "+ splited[3] + " da tabela: " + splited[2] + " que é a refernecia")
+
+        for atr in attributes:
+            if atr.name == splited[1]:
+                print("é igual:" + str(atr.name))
+                atr.is_fk = True
+                # atr.notations.append("//[ForeignKey(\""+ SqlHandler.cammel_to_snake(atr.name) +"\")]")
+
+        return True
+
+    # MYSQL WORKBENCH
+    # def constraint_handler(line, in_table, atr):
+    #     if "constraint".upper() in line.upper():
+    #         # print("constraint")
+    #         # print("linha inteira:" + line) 
+    #         print("---")
+    #     if "FOREIGN KEY (".upper() in line.upper():
+    #         splited = line.split("`")
+    #         print("Foreign Key:" + splited[1])
+    #         # algo = atr.index(splited[1])
+    #         # print(algo)
+            
+    #         # print("linha inteira: " + line)
+    #     if "REFERENCES".upper() in line.upper():
+    #         splited = line.split("`")
+    #         print("tabela referenciada: " + splited[3])
+    #         print("atributo referenciado: " + splited[5])
+    #         # print("linha inteira: " + line)
+            
+
+
+    # def relationship_from_mysql_workbench_line(line, atr):
+    #     # SqlHandler.constraint_handler(line, True, atr)
+    #     return True

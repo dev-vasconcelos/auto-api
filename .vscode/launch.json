@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "generator.py",
             "console": "integratedTerminal",
-            "args": ["-p","ProjetoBase", "-s", "rfid.sql"]
+            "args": ["-p","ProjetoBase", "-s", "sql_references/rfid_complex-basicaly-this-system-final-boss.sql"]
         }
     ]
 }

@@ -1,12 +1,13 @@
 class Attribute:
 
-    def __init__(self, name=None, is_getter=True, is_setter=True, type="", privacy="", notations=[""]):
+    def __init__(self, name=None, is_getter=True, is_setter=True, type="", privacy="", notations=[""], is_fk=False):
         self.name = name
         self.type = type
         self.is_getter = is_getter
         self.is_setter =  is_setter
         self.privacy = privacy
         self.notations = notations
+        self.is_fk = is_fk
     
     def atr_string(self):
         getset = "{"
