@@ -42,7 +42,7 @@ $ python3 generator.py $parametros
 
 # One to One // 1-1
 
-Relacionamento exemplo:
+
 ![One-One relationship diagram](doc/images/one_one_relationship_diagram.png)
 
 ## NpgContext.OnModelCreating()
@@ -81,7 +81,7 @@ Relacionamento exemplo:
 
 # One to Many // 1-n
 
-Relacionamento exemplo:
+
 ![One-Many relationship diagram](doc/images/one_many_relationship_diagram.png)
 
 ## NpgContext.OnModelCreating()
@@ -121,7 +121,7 @@ Relacionamento exemplo:
 
 # Many to Many // n-n
 
-Relacionamento exemplo:
+
 ![Many-Many relationship diagram](doc/images/many_many_relationship_diagram.png)
 
 ## NpgContext.OnModelCreating()
