@@ -18,6 +18,8 @@ class SqlHandler():
 
     def createModel(project_name, file_path):
         # print(file_path)
+        # to faznedo minhas coisas
+        # to adicionando
         is_mysql_workbench = True
         with open(file_path, 'r') as sql_file:
             lines = sql_file.readlines()
@@ -246,6 +248,9 @@ class SqlHandler():
                 # atr.notations.append("//[ForeignKey(\""+ SqlHandler.cammel_to_snake(atr.name) +"\")]")
 
         return True
+
+        def criar_funcao():
+            pass
 
     # MYSQL WORKBENCH
     # def constraint_handler(line, in_table, atr):
