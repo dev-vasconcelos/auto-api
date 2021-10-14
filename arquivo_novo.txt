@@ -1,2 +1,0 @@
-Este arquivo pode ser ignorado, pois ele é apenas para demonstar
-o funcionamento da ferramenta git para o meu amigo Ricardão
