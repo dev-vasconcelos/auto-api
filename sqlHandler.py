@@ -87,6 +87,15 @@ class SqlHandler():
         table_name = re.sub('[^A-Za-z0-9]+', '', table_name)
         return table_name
 
+    def table_to_entity_name(table_name):
+        has_prefix = False
+        if (table_name[:3] == "tb_"):
+            has_prefix = True
+        entity_name = SqlHandler.snake_to_cammel(table_name)
+        if has_prefix:
+            entity_name = entity_name[2:]
+        return entity_name
+
     def snake_to_cammel(string):
         final_string = string
         while string.find("_") >= 0 :
@@ -241,16 +250,36 @@ class SqlHandler():
         splited[3] = re.sub('[^A-Za-z0-9]+', '', splited[3])
         print("atributo: "+ splited[3] + " da tabela: " + splited[2] + " que é a refernecia")
 
+
         for atr in attributes:
-            if atr.name == splited[1]:
+            if atr.name == splited[1]:        
+                SqlHandler.find_class(replaced.split("(")[2].split('.')[1])
                 print("é igual:" + str(atr.name))
                 atr.is_fk = True
                 # atr.notations.append("//[ForeignKey(\""+ SqlHandler.cammel_to_snake(atr.name) +"\")]")
 
         return True
 
-        def criar_funcao():
-            pass
+    def find_class(table_name):
+        print("table name" + table_name)
+        print(SqlHandler.table_to_entity_name(table_name)) 
+
+
+    ## TODO: Como eu faço para saber se é 1-1 ou 1-n?
+    
+    ####### No caso, se for 1 - N
+    #### 1 fica (EntidadeUm.cs)
+    ## [ForeignKey]
+    ## [Column("entidade_dois_id")]
+    ## public long EntidadeDoisId {get; set;}
+    ## 
+    ## public EntidadeDois EntidadeDois {get; set;}
+    ##
+    #### n fica
+    ##  [Newtonsoft.Json.JsonIgnore] // não me recordo se todos tem json ignore
+    ##  public List<EntidadeUm> EntidadesUm {get; set;}
+    ##
+
 
     # MYSQL WORKBENCH
     # def constraint_handler(line, in_table, atr):
