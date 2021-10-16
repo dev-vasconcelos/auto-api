@@ -213,7 +213,7 @@ namespace ${projectName}.Controllers.AbstractClass
             return Ok(response);
         }
 
-        [NonAction]
+        //[NonAction]
         [HttpDelete("{id}")]
         [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
